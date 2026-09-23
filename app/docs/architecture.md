@@ -42,3 +42,34 @@ The application itself is intentionally minimal so the project can focus on cont
 3. **Production** — Changes that pass validation are promoted to the live environment.
 
 The CI/CD pipeline will automate this progression while maintaining validation gates between environments.
+
+## AWS Deployment and Cost Considerations
+
+The AWS deployment will use Amazon ECR to store the Docker container image and Amazon ECS with AWS Fargate to run the containerised application.
+
+The project will use the eu-west-2 (London) region. AWS identity and region will be verified before infrastructure is created.
+
+To keep the project cost-efficient, only the resources required to demonstrate the CI/CD architecture will be deployed. Chargeable runtime resources, particularly ECS/Fargate workloads, will be stopped or removed when they are no longer required.
+
+Amazon ECR storage will also be kept minimal by retaining only the container images required for the project.
+
+## Implemented AWS Infrastructure
+
+- **Amazon ECR** — Stores the Docker container image.
+- **Amazon ECS** — Manages the container workload through the `cloud-cicd-cluster`.
+- **AWS Fargate** — Runs the container without managing EC2 servers.
+- **ECS Task Definition** — Defines the container image, CPU, memory and runtime configuration.
+- **Security Group** — Allows temporary inbound HTTP traffic on TCP port 80.
+- **Public Networking** — The Fargate task receives a public IP for deployment verification.
+
+### Deployment Verification
+
+The containerised application was successfully deployed to AWS Fargate and accessed through the task's public IP address over HTTP.
+
+After verification, the Fargate task was stopped to avoid unnecessary runtime costs.
+
+### Troubleshooting
+
+The initial Fargate deployment failed because the Docker image was built for ARM64 while the ECS task required AMD64 (`linux/amd64`).
+
+The image was rebuilt for `linux/amd64`, pushed to Amazon ECR, and the Fargate deployment was successfully repeated.
