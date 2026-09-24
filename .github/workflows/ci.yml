@@ -18,7 +18,7 @@ jobs:
       - name: Validate application files
         run: |
           test -f app/index.html
-          test -f app/style.css
+          test -f app/styles.css
 
         # Build the application into a Docker image
       - name: Build Docker image
