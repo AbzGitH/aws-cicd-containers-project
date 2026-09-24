@@ -10,17 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Download the repository code into the GitHub Actions runner
       - name: Checkout repository
         uses: actions/checkout@v4
 
+        # Confirm the required application files exist before building
       - name: Validate application files
         run: |
           test -f app/index.html
           test -f app/style.css
 
+        # Build the application into a Docker image
       - name: Build Docker image
         run: docker build -t cloud-cicd-app ./app
 
+        # Run the container and verify the web application responds successfully
       - name: Test Docker container
         run: |
           docker run -d --name ci-test -p 8080:80 cloud-cicd-app
@@ -28,6 +32,7 @@ jobs:
           curl --fail http://localhost:8080
           docker stop ci-test
 
+        # Remove the temporary test container even if an earlier step fails
       - name: Clean up test container
         if: always()
         run: docker rm -f ci-test || true
