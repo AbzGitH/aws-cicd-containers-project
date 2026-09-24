@@ -27,3 +27,7 @@ jobs:
           sleep 2
           curl --fail http://localhost:8080
           docker stop ci-test
+
+      - name: Clean up test container
+        if: always()
+        run: docker rm -f ci-test || true
