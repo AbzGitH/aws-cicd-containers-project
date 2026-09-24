@@ -20,3 +20,10 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t cloud-cicd-app ./app
+
+      - name: Test Docker container
+        run: |
+          docker run -d --name ci-test -p 8080:80 cloud-cicd-app
+          sleep 2
+          curl --fail http://localhost:8080
+          docker stop ci-test
