@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate application files
+        run: |
+          test -f app/index.html
+          test -f app/style.css
+
+      - name: Build Docker image
+        run: docker build -t cloud-cicd-app ./app
