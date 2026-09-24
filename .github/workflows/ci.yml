@@ -18,7 +18,7 @@ jobs:
       - name: Validate application files
         run: |
           test -f app/index.html || { echo "ERROR: app/index.html is missing"; exit 1; }
-          test -f app/styles.css || { echo "ERROR: app/styles.css is missing"; exit 1; }
+          test -f app/style.css || { echo "ERROR: app/style.css is missing"; exit 1; }
 
         # Build the application into a Docker image
       - name: Build Docker image
