@@ -26,6 +26,10 @@ jobs:
           role-to-assume: arn:aws:iam::560396669076:role/GitHubActionsDeployRole
           aws-region: eu-west-2
 
+        # Authenticate Docker with Amazon ECR so the image can be pushed
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
         # Confirm the required application files exist before building
       - name: Validate application files
         run: |
@@ -43,6 +47,12 @@ jobs:
           sleep 2
           curl --fail http://localhost:8080
           docker stop ci-test
+
+        # Tag and push the tested Docker image to Amazon ECR
+      - name: Push Docker image to ECR
+        run: |
+          docker tag cloud-cicd-app 560396669076.dkr.ecr.eu-west-2.amazonaws.com/cloud-cicd-app:${{ github.sha }}
+          docker push 560396669076.dkr.ecr.eu-west-2.amazonaws.com/cloud-cicd-app:${{ github.sha }}
 
         # Remove the temporary test container even if an earlier step fails
       - name: Clean up test container
