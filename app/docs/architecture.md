@@ -73,3 +73,7 @@ After verification, the Fargate task was stopped to avoid unnecessary runtime co
 The initial Fargate deployment failed because the Docker image was built for ARM64 while the ECS task required AMD64 (`linux/amd64`).
 
 The image was rebuilt for `linux/amd64`, pushed to Amazon ECR, and the Fargate deployment was successfully repeated.
+
+### Planned Improvement
+
+Add an Application Load Balancer (ALB) in front of the ECS service to provide a stable public endpoint across task replacements and deployments.
