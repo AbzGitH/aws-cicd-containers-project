@@ -54,6 +54,24 @@ jobs:
           docker tag cloud-cicd-app 560396669076.dkr.ecr.eu-west-2.amazonaws.com/cloud-cicd-app:${{ github.sha }}
           docker push 560396669076.dkr.ecr.eu-west-2.amazonaws.com/cloud-cicd-app:${{ github.sha }}
 
+        # Insert the newly pushed image into the ECS task definition
+      - name: Render ECS task definition
+        id: render-task
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ecs-task-definition.json
+          container-name: cloud-cicd-container
+          image: 560396669076.dkr.ecr.eu-west-2.amazonaws.com/cloud-cicd-app:${{ github.sha }}
+
+        # Deploy the updated task definition to the ECS service
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task.outputs.task-definition }}
+          service: cloud-cicd-service
+          cluster: cloud-cicd-cluster
+          wait-for-service-stability: true
+
         # Remove the temporary test container even if an earlier step fails
       - name: Clean up test container
         if: always()
