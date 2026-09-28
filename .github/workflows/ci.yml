@@ -54,7 +54,29 @@ jobs:
           docker tag cloud-cicd-app 560396669076.dkr.ecr.eu-west-2.amazonaws.com/cloud-cicd-app:${{ github.sha }}
           docker push 560396669076.dkr.ecr.eu-west-2.amazonaws.com/cloud-cicd-app:${{ github.sha }}
 
-        # Insert the newly pushed image into the ECS task definition
+        # Remove the temporary test container even if an earlier step fails
+      - name: Clean up test container
+        if: always()
+        run: docker rm -f ci-test || true
+
+  deploy-production:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      # Download the repository files required for deployment
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Authenticate to AWS using OIDC
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::560396669076:role/GitHubActionsDeployRole
+          aws-region: eu-west-2
+
+      # Insert the tested image into the Production ECS task definition
       - name: Render ECS task definition
         id: render-task
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -63,7 +85,7 @@ jobs:
           container-name: cloud-cicd-container
           image: 560396669076.dkr.ecr.eu-west-2.amazonaws.com/cloud-cicd-app:${{ github.sha }}
 
-        # Deploy the updated task definition to the ECS service
+      # Deploy only after the Production environment approval gate passes
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
@@ -71,8 +93,3 @@ jobs:
           service: cloud-cicd-service
           cluster: cloud-cicd-cluster
           wait-for-service-stability: true
-
-        # Remove the temporary test container even if an earlier step fails
-      - name: Clean up test container
-        if: always()
-        run: docker rm -f ci-test || true

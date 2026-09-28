@@ -74,6 +74,12 @@ The initial Fargate deployment failed because the Docker image was built for ARM
 
 The image was rebuilt for `linux/amd64`, pushed to Amazon ECR, and the Fargate deployment was successfully repeated.
 
+### Environment Promotion Flow
+
+Development → UAT/Staging → Production
+
+Changes are validated in Development first, promoted to UAT/Staging for release validation, then approved for Production deployment.
+
 ### Planned Improvement
 
-Add an Application Load Balancer (ALB) in front of the ECS service to provide a stable public endpoint across task replacements and deployments.
+Complete HTTPS for the Application Load Balancer using ACM and `cicd.abscloud.dev`. HTTP routing through the ALB is already working.
