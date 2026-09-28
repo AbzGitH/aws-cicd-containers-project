@@ -53,3 +53,21 @@ Production deployment should only happen after:
 - Development validation passes.
 - UAT/Staging validation passes.
 - Manual approval is given for Production.
+
+### Production Approval Gate Verification
+
+GitHub Actions was configured to use the `production` environment for the Production deployment job.
+
+After a successful push to `main`, the CI build completed automatically, but the Production deployment entered a `Waiting` state instead of deploying immediately.
+
+This confirms that Production changes now require manual approval before deployment.
+
+### Environment Promotion Workflow
+
+Application changes move through:
+
+Development → UAT/Staging → Production
+
+Development is used for initial testing, UAT/Staging validates the release candidate, and Production deployment requires manual approval through the GitHub `production` environment.
+
+The approved Production deployment was successfully completed through GitHub Actions.
