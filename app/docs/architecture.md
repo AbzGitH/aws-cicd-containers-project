@@ -8,6 +8,10 @@ The target deployment flow is:
 
 Developer → GitHub → GitHub Actions → Docker → Amazon ECR → Amazon ECS/Fargate → Running Application
 
+## Final Architecture
+
+![Final CI/CD architecture](architecture.png)
+
 ## Architecture Components
 
 - **GitHub** — Stores the application source code and project history.
@@ -53,6 +57,14 @@ To keep the project cost-efficient, only the resources required to demonstrate t
 
 Amazon ECR storage will also be kept minimal by retaining only the container images required for the project.
 
+### Cost Review
+
+![AWS cost review](evidence/screenshots/aws-cost-review.png)
+
+AWS Cost Explorer was reviewed before project completion. Current Project 3 usage remained minimal, with only very small month-to-date charges recorded for Amazon ECR, ECS/Fargate, Elastic Load Balancing and related data transfer.
+
+The Application Load Balancer and running ECS/Fargate services remain potentially chargeable while active, so unnecessary runtime resources will be removed during final project cleanup.
+
 ## Implemented AWS Infrastructure
 
 - **Amazon ECR** — Stores the Docker container image.
@@ -79,6 +91,16 @@ The image was rebuilt for `linux/amd64`, pushed to Amazon ECR, and the Fargate d
 Development → UAT/Staging → Production
 
 Changes are validated in Development first, promoted to UAT/Staging for release validation, then approved for Production deployment.
+
+## AWS Security Review
+
+The project uses GitHub Actions OIDC to authenticate to AWS without storing long-lived AWS access keys. The IAM deployment role is restricted to the project repository and required deployment permissions.
+
+Network access was also tightened so the public Application Load Balancer accepts incoming web traffic, while the ECS/Fargate security group accepts TCP port 80 only from the ALB security group rather than directly from the internet.
+
+The application was successfully re-tested through the ALB after this change, confirming that the restricted network path remained operational.
+
+HTTPS remains pending completion of ACM DNS validation for `cicd.abscloud.dev`.
 
 ### Planned Improvement
 
