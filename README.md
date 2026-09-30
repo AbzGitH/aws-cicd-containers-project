@@ -77,4 +77,4 @@ Chargeable runtime resources will be removed when they are no longer required.
 
 The automated CI/CD pipeline, environment promotion workflow, Production approval gate, ECS/Fargate deployment and Application Load Balancer are operational.
 
-HTTPS for `cicd.abscloud.dev` remains pending completion of ACM DNS validation.
+HTTPS for `cicd.abscloud.dev` remains a non-blocking improvement. ACM DNS validation records were verified through the authoritative DNS server, Google DNS and Cloudflare DNS, but ACM remained in `PENDING_VALIDATION`.

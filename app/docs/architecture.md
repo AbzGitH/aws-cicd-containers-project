@@ -100,8 +100,8 @@ Network access was also tightened so the public Application Load Balancer accept
 
 The application was successfully re-tested through the ALB after this change, confirming that the restricted network path remained operational.
 
-HTTPS remains pending completion of ACM DNS validation for `cicd.abscloud.dev`.
+HTTPS for `cicd.abscloud.dev` remains a non-blocking improvement. The ACM validation CNAME was verified publicly and through the authoritative DNS server, but ACM remained in `PENDING_VALIDATION`.
 
 ### Planned Improvement
 
-Complete HTTPS for the Application Load Balancer using ACM and `cicd.abscloud.dev`. HTTP routing through the ALB is already working.
+HTTP routing through the Application Load Balancer was successfully implemented and verified. HTTPS was investigated separately but not completed because ACM certificate validation remained pending despite correct DNS configuration.
