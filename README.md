@@ -75,6 +75,10 @@ Chargeable runtime resources will be removed when they are no longer required.
 
 ## Project Status
 
-The automated CI/CD pipeline, environment promotion workflow, Production approval gate, ECS/Fargate deployment and Application Load Balancer are operational.
+The CI/CD pipeline, environment promotion workflow, Production approval gate, ECS/Fargate deployment and Application Load Balancer were successfully implemented and validated during the project.
 
-HTTPS for `cicd.abscloud.dev` remains a non-blocking improvement. ACM DNS validation records were verified through the authoritative DNS server, Google DNS and Cloudflare DNS, but ACM remained in `PENDING_VALIDATION`.
+After project completion, chargeable runtime infrastructure was intentionally decommissioned to avoid ongoing AWS costs. The CI workflow was then disabled because future deployment runs would target resources that no longer exist.
+
+A later workflow run failed at the ECS deployment step because the previously configured target group no longer had an associated load balancer. This failure is retained as evidence of the expected post-cleanup state rather than an implementation defect.
+
+HTTPS for `cicd.abscloud.dev` remains a documented non-blocking improvement. ACM DNS validation records were verified through the authoritative DNS server, Google DNS and Cloudflare DNS, but ACM remained in `PENDING_VALIDATION`.
